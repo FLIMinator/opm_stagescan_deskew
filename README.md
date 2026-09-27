@@ -32,7 +32,7 @@ A workflow should extract each individual `(plane, y, x)` volume, apply the appr
 
 In a stage-scanned OPM acquisition, the first array axis is not a Cartesian `z` axis. Each image is an oblique plane, and successive images correspond to translated positions of that plane during the stage scan.
 
-The deskew routine inverse-resamples the raw acquisition directly onto a Cartesian output grid. For each output voxel it determines the two acquired planes that bracket that position and interpolates between samples from those planes.
+The deskew routine interpolates the raw acquisition into Cartesian output grid. For each output voxel it determines the two acquired planes that bracket that position and interpolates between samples from those planes.
 
 `theta_acq` (exposed as `theta_deg`) defines the physical orientation of the acquired oblique plane and therefore the deskew geometry.
 
@@ -48,9 +48,9 @@ The general deskew algorithm assumes that the input volume has a known interpret
 - `camera_x` is the orthogonal in-plane direction;
 - the sign/order of the acquisition planes and camera axes is known.
 
-The core algorithm does not require one universal microscope orientation. If a dataset was stored with the opposite acquisition-plane order, reverse that order before deskewing or pass `reverse_plane_order=True`.
+If a dataset was stored with the opposite acquisition-plane order, reverse that order before deskewing or pass `reverse_plane_order=True`.
 
-Camera mounting, optical reflections, scan direction and software storage conventions can all affect orientation. In a dual-view system, the two views may also require different orientation normalisation after reconstruction. Those choices are acquisition-system conventions rather than part of the deskew mathematics.
+Camera mounting, optical reflections, scan direction and software storage conventions can all affect orientation. In a dual-view system, the two views may also require different orientation normalisation after reconstruction. Those choices are acquisition-system conventions.
 
 The included Micro-Manager workflow therefore keeps the current dOPM view/flip rules in `workflows/micromanager.py`, outside the core deskew code.
 
@@ -119,7 +119,7 @@ result = deskew_stage_scan(
 tifffile.imwrite("deskewed.tif", result)
 ```
 
-A generic TIFF does not contain enough information for this package to infer the microscope's scan direction or view orientation automatically. The user/workflow is responsible for supplying the stack in the expected acquisition order.
+A generic TIFF does not contain enough information for this package to infer the microscope's scan direction or view orientation automatically.
 
 See `notebooks/02_single_tiff_stack.ipynb` for the same example interactively.
 
@@ -130,7 +130,7 @@ The included workflow supports the two TIFF layouts used by the original scripts
 - an `NDTiffStack*.tif` file inside a camera folder;
 - an OME-TIFF series inside a camera folder.
 
-It also retains the current useful folder behaviour:
+And useful folder behaviour:
 
 - finding `Hamamatsu` camera folders;
 - parsing `t##_p##` folder names;
