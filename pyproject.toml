@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opm-deskew"
+version = "0.1.0"
+description = "Simple stage-scan oblique plane microscopy deskewing in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "OPM deskew contributors"}
+]
+dependencies = [
+    "numpy>=1.24",
+    "numba>=0.58",
+    "tifffile>=2023.7.10",
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "jupyter>=1.0",
+    "matplotlib>=3.7",
+]
+
+[project.scripts]
+opm-deskew-mm = "opm_deskew.workflows.micromanager:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
